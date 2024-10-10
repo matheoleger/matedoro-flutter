@@ -1,28 +1,24 @@
-import 'dart:async';
 
-typedef PeriodicCallBack = void Function(Timer periodicTime);
+const hoursInMs = 1000 * 60 * 60;
+const minuteInMs = 60000;
+const secondInMs = 1000;
 
-void handleTimer(int time) {
-
-  click(Timer periodicTime) {
-    print(periodicTime.tick);
-    if(periodicTime.tick == 0) {
-      clearInterval(periodicTime);
-    }
-  }
+String getFormattedTimer(double remainingTime) {
+  print(remainingTime);
+  var remainingMs = remainingTime * 1000;
   
-  var period = setInterval(click, time);
+  var hours = (remainingMs / hoursInMs).floor(); // Give remaining hours
+  remainingMs -= hours * hoursInMs; // Subtract hours
+  var minutes = (remainingMs / minuteInMs).floor(); // Give remaining minutes
+  remainingMs -= minutes * minuteInMs; // Subtract minutes
+  var seconds = (remainingMs / secondInMs).floor(); // Give remaining seconds
+  
+  var formattedMinutes = getFormattedTime(minutes);
+  var formattedSeconds = getFormattedTime(seconds);
+
+  return "$formattedMinutes:$formattedSeconds";
 }
 
-Timer setInterval(PeriodicCallBack click, time) {
-  Duration periodic = Duration(milliseconds: time);
-  var period = Timer.periodic(periodic, (intervalTime) {
-    click(intervalTime);
-  });
-
-  return period;
-}
-
-void clearInterval(Timer timer) {
-  timer.cancel();
+String getFormattedTime(int time) {
+  return time < 10 ? "0$time" : time.toString(); 
 }

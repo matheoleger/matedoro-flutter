@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:matedoro_flutter/providers/pomodoro.provider.dart';
 import 'package:matedoro_flutter/providers/timer.provider.dart';
 import 'package:matedoro_flutter/widgets/pomodoro.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider<TimerProvider>(
-      create: (_) => TimerProvider(),
-      child: const MyApp(),
-    ),
+    ChangeNotifierProvider(create: (_) => PomodoroProvider(timerProvider: TimerProvider())),
+    // ChangeNotifierProxyProvider<TimerProvider, PomodoroProvider>(
+    //   create: (context) => PomodoroProvider(timerProvider: context.read<TimerProvider>()),
+    //   update: (context, timerProvider, previousProvider) => PomodoroProvider(timerProvider: timerProvider),
+    // ),
+    // ChangeNotifierProvider<PomodoroProvider>(
+    //   create: (_) => PomodoroProvider(),
+    //   child: const MyApp(),
+    // ),
   );
 }
 
@@ -40,18 +46,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  onPlayButton(TimerProvider timerProvider) {
-    if (!timerProvider.isRunning) {
-      timerProvider.setTimerDuration(1000);
-      timerProvider.startTimer();
+  onPlayButton(PomodoroProvider pomodoroProvider) {
+    if (!pomodoroProvider.isRunning) {
+      pomodoroProvider.play();
     } else {
-      timerProvider.stopTimer();
+      pomodoroProvider.pause();
     }
+  }
+
+  onNewButton(PomodoroProvider pomodoroProvider) {
+    pomodoroProvider.startNewPomodoroSession();
+    // pomodoroProvider.startTimer();
   }
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = Provider.of<TimerProvider>(context);
+    // final timerProvider = Provider.of<TimerProvider>(context);
+    final pomodoroProvider = Provider.of<PomodoroProvider>(context);
     return Scaffold(
       body: Center(
           // Center is a layout widget. It takes a single child and positions it
@@ -76,12 +87,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   backgroundColor: WidgetStateProperty.all<Color>(
                       const Color.fromARGB(255, 255, 255, 255)
                           .withOpacity(0.5))),
-              onPressed: () => onPlayButton(timerProvider),
+              onPressed: () => onPlayButton(pomodoroProvider),
               child: Icon(LucideIcons.play))
         ],
       )),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print('Coucou Mattéo'),
+        onPressed: () => onNewButton(pomodoroProvider),
         tooltip: 'Increment',
         child: const Icon(LucideIcons.plus),
       ), // This trailing comma makes auto-formatting nicer for build methods.

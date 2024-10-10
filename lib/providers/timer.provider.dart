@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class TimerProvider extends ChangeNotifier {
   Timer? timer;
   double timeLeft = 0;
-  bool isRunning = false;
+  // bool isRunning = false;
 
   void setTimerDuration(double duration)
   {
@@ -15,7 +15,7 @@ class TimerProvider extends ChangeNotifier {
 
   void startTimer()
   {
-      isRunning = true;
+      // isRunning = true;
       Duration periodic = Duration(milliseconds: 1000); // periodic to triggered timer every seconds
       timer = Timer.periodic(periodic, (intervalTime) {
         timeLeft--;
@@ -25,7 +25,7 @@ class TimerProvider extends ChangeNotifier {
 
   void stopTimer()
   {
-    isRunning = false;
+    // isRunning = false;
     timer?.cancel();
     notifyListeners();
   }
