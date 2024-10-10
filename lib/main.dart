@@ -7,15 +7,15 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(create: (_) => PomodoroProvider(timerProvider: TimerProvider())),
+    // ChangeNotifierProvider(create: (_) => PomodoroProvider(timerProvider: TimerProvider())),
     // ChangeNotifierProxyProvider<TimerProvider, PomodoroProvider>(
     //   create: (context) => PomodoroProvider(timerProvider: context.read<TimerProvider>()),
     //   update: (context, timerProvider, previousProvider) => PomodoroProvider(timerProvider: timerProvider),
     // ),
-    // ChangeNotifierProvider<PomodoroProvider>(
-    //   create: (_) => PomodoroProvider(),
-    //   child: const MyApp(),
-    // ),
+    ChangeNotifierProvider<PomodoroProvider>(
+      create: (_) => PomodoroProvider(timerProvider: TimerProvider()),
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'Matedoro',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.black12,
+        colorSchemeSeed: Color.fromARGB(255, 0, 0, 0)
         // colorScheme: ColorScheme(brightness: brightness, primary: primary, onPrimary: onPrimary, secondary: secondary, onSecondary: onSecondary, error: error, onError: onError, surface: surface, onSurface: onSurface),
         // useMaterial3: true
       ),
@@ -88,11 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       const Color.fromARGB(255, 255, 255, 255)
                           .withOpacity(0.5))),
               onPressed: () => onPlayButton(pomodoroProvider),
-              child: Icon(LucideIcons.play))
+              child: Icon(pomodoroProvider.isRunning ? LucideIcons.pause : LucideIcons.play, color: Colors.black,))
         ],
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () => onNewButton(pomodoroProvider),
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         tooltip: 'Increment',
         child: const Icon(LucideIcons.plus),
       ), // This trailing comma makes auto-formatting nicer for build methods.

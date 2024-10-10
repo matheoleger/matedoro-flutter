@@ -5,13 +5,13 @@ class PomodoroProvider extends ChangeNotifier {
   final TimerProvider timerProvider;
 
   var cyclesNumber = 4;
-  var currentCycle = 1;
+  var currentCycle = 0;
 
   // double cycleFocusTime = 25*60; // 25min in seconds
   // double cyclePauseTime = 5*60; // 5min in seconds
 
-  double cycleFocusTime = 30; // 25min in seconds
-  double cyclePauseTime = 10; // 5min in seconds
+  double cycleFocusTime = 5; // 25min in seconds
+  double cyclePauseTime = 3; // 5min in seconds
 
   var isFocus = true;
   var isRunning = false;
@@ -38,6 +38,10 @@ class PomodoroProvider extends ChangeNotifier {
   }
 
   void startNewPomodoroSession() {
+    if(isRunning) {
+      timerProvider.stopTimer();
+    }
+    currentCycle=0;
     timerProvider.setTimerDuration(cycleFocusTime);
     timerProvider.startTimer();
     isFocus = true;
@@ -55,6 +59,7 @@ class PomodoroProvider extends ChangeNotifier {
     } else {
       timerProvider.setTimerDuration(cycleFocusTime);
       isFocus = true;
+      currentCycle = (currentCycle + 1)%cyclesNumber;
     }
   }
 }

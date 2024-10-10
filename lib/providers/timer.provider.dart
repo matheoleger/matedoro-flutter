@@ -15,6 +15,7 @@ class TimerProvider extends ChangeNotifier {
 
   void startTimer()
   {
+      notifyListeners();
       // isRunning = true;
       Duration periodic = Duration(milliseconds: 1000); // periodic to triggered timer every seconds
       timer = Timer.periodic(periodic, (intervalTime) {
