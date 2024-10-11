@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:matedoro_flutter/providers/timer.provider.dart';
 
+enum CycleType {
+  LONG,
+  SHORT,
+}
+
 class PomodoroProvider extends ChangeNotifier {
   final TimerProvider timerProvider;
 
@@ -37,7 +42,9 @@ class PomodoroProvider extends ChangeNotifier {
     isRunning = false;
   }
 
-  void startNewPomodoroSession() {
+  void startNewPomodoroSession(CycleType cycleType) {
+    setCycleFocusAndPause(cycleType);
+
     if(isRunning) {
       timerProvider.stopTimer();
     }
@@ -46,6 +53,16 @@ class PomodoroProvider extends ChangeNotifier {
     timerProvider.startTimer();
     isFocus = true;
     isRunning = true;
+  }
+
+  void setCycleFocusAndPause(CycleType cycleType) {
+    if(cycleType == CycleType.LONG) {
+      cycleFocusTime = 25*60; // 25min in seconds
+      cyclePauseTime = 5*60; // 5min in seconds
+    } else {
+      cycleFocusTime = 5; 
+      cyclePauseTime = 3;
+    }
   }
 
   void _onTimerUpdated() {

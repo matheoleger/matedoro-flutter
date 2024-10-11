@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:matedoro_flutter/providers/pomodoro.provider.dart';
 import 'package:matedoro_flutter/providers/timer.provider.dart';
+import 'package:matedoro_flutter/widgets/choose_session_time_modal.dart';
 import 'package:matedoro_flutter/widgets/pomodoro.dart';
 import 'package:provider/provider.dart';
 
@@ -54,10 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  onNewButton(PomodoroProvider pomodoroProvider) {
-    pomodoroProvider.startNewPomodoroSession();
-    // pomodoroProvider.startTimer();
-  }
+  // onNewButton(PomodoroProvider pomodoroProvider) {
+  //   pomodoroProvider.startNewPomodoroSession();
+  //   // pomodoroProvider.startTimer();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       )),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => onNewButton(pomodoroProvider),
+        onPressed: () => showModalBottomSheet<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return ChooseSessionTimeModal();
+              }),
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         tooltip: 'Increment',
         child: const Icon(LucideIcons.plus),
