@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:matedoro_flutter/providers/pomodoro.provider.dart';
@@ -7,12 +8,22 @@ import 'package:matedoro_flutter/widgets/pomodoro.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: "pomodoro_channel",
+        channelName: "Pomodoro notifications",
+        channelDescription: "Notification channel for Matedoro app",
+        defaultColor: Color.fromARGB(255, 0, 0, 0),
+        ledColor: Color.fromARGB(255, 0, 0, 0),
+        enableVibration: true,
+        soundSource: "resource://raw/res_notification",
+      )
+    ],
+    debug: true,
+  );
   runApp(
-    // ChangeNotifierProvider(create: (_) => PomodoroProvider(timerProvider: TimerProvider())),
-    // ChangeNotifierProxyProvider<TimerProvider, PomodoroProvider>(
-    //   create: (context) => PomodoroProvider(timerProvider: context.read<TimerProvider>()),
-    //   update: (context, timerProvider, previousProvider) => PomodoroProvider(timerProvider: timerProvider),
-    // ),
     ChangeNotifierProvider<PomodoroProvider>(
       create: (_) => PomodoroProvider(timerProvider: TimerProvider()),
       child: const MyApp(),
@@ -47,6 +58,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) => {
+      if(!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications()
+      }
+    });
+    super.initState();
+  }
+
   onPlayButton(PomodoroProvider pomodoroProvider) {
     if (!pomodoroProvider.isRunning) {
       pomodoroProvider.play();

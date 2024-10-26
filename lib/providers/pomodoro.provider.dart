@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:matedoro_flutter/providers/timer.provider.dart';
 
@@ -72,11 +73,26 @@ class PomodoroProvider extends ChangeNotifier {
 
     if(isFocus) {
       timerProvider.setTimerDuration(cyclePauseTime);
+      triggeredPomodoroNotification();
       isFocus = false;
     } else {
       timerProvider.setTimerDuration(cycleFocusTime);
+      triggeredPomodoroNotification();
       isFocus = true;
       currentCycle = (currentCycle + 1)%cyclesNumber;
     }
+  }
+
+  void triggeredPomodoroNotification() {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 0,
+        channelKey: "pomodoro_channel",
+        actionType: ActionType.Default,
+        title: isFocus ? "Time to take a break" : "Time to go back to work",
+        body: isFocus ? "You have completed a cycle. Take a break." : "Break is over. Go back to work now or consequences.",
+        category: NotificationCategory.Reminder,
+      )
+    );
   }
 }
