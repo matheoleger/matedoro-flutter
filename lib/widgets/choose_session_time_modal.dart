@@ -10,7 +10,7 @@ class ChooseSessionTimeModal extends StatelessWidget {
     final pomodoroProvider = Provider.of<PomodoroProvider>(context);
 
     onChooseCycle(CycleType cycleType) {
-      pomodoroProvider.startNewPomodoroSession(cycleType);
+      pomodoroProvider.startNewWorkSession(cycleType);
       Navigator.pop(context);
     }
 

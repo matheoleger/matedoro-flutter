@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:matedoro_flutter/providers/timer.provider.dart';
+import 'package:matedoro_flutter/services/database_service.dart';
 
 enum CycleType {
   LONG,
@@ -9,6 +10,7 @@ enum CycleType {
 
 class PomodoroProvider extends ChangeNotifier {
   final TimerProvider timerProvider;
+  final DatabaseService databaseService;
 
   var cyclesNumber = 4;
   var currentCycle = 0;
@@ -22,7 +24,7 @@ class PomodoroProvider extends ChangeNotifier {
   var isFocus = true;
   var isRunning = false;
 
-  PomodoroProvider({required this.timerProvider}) {
+  PomodoroProvider({required this.timerProvider, required this.databaseService}) {
     timerProvider.addListener(_onTimerUpdated);
   }
 
@@ -43,12 +45,13 @@ class PomodoroProvider extends ChangeNotifier {
     isRunning = false;
   }
 
-  void startNewPomodoroSession(CycleType cycleType) {
+  void startNewWorkSession(CycleType cycleType) {
     setCycleFocusAndPause(cycleType);
 
     if(isRunning) {
       timerProvider.stopTimer();
     }
+    
     currentCycle=0;
     timerProvider.setTimerDuration(cycleFocusTime);
     timerProvider.startTimer();
@@ -94,5 +97,9 @@ class PomodoroProvider extends ChangeNotifier {
         category: NotificationCategory.Reminder,
       )
     );
+  }
+
+  void getHistory() {
+
   }
 }
