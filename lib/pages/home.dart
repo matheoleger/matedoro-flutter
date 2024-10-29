@@ -49,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
         leading: IconButton(
           icon: Icon(LucideIcons.history),
           onPressed: () {
+            print(pomodoroProvider.getHistory());
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return const HistoryPage();
           }));

@@ -1,7 +1,11 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:matedoro_flutter/models/cycle.dart';
+import 'package:matedoro_flutter/models/history_item.dart';
+import 'package:matedoro_flutter/models/session.dart';
 import 'package:matedoro_flutter/providers/timer.provider.dart';
 import 'package:matedoro_flutter/services/database_service.dart';
+import 'package:path/path.dart';
 
 enum CycleType {
   LONG,
@@ -12,14 +16,17 @@ class PomodoroProvider extends ChangeNotifier {
   final TimerProvider timerProvider;
   final DatabaseService databaseService;
 
+  Session? currentSession;
+  Cycle? currentCycle;
+
   var cyclesNumber = 4;
-  var currentCycle = 0;
+  var currentCycleNumber = 0;
 
-  // double cycleFocusTime = 25*60; // 25min in seconds
-  // double cyclePauseTime = 5*60; // 5min in seconds
+  double cycleFocusTime = 25*60; // 25min in seconds
+  double cyclePauseTime = 5*60; // 5min in seconds
 
-  double cycleFocusTime = 5; // 25min in seconds
-  double cyclePauseTime = 3; // 5min in seconds
+  // double cycleFocusTime = 5; // 25min in seconds
+  // double cyclePauseTime = 3; // 5min in seconds
 
   var isFocus = true;
   var isRunning = false;
@@ -45,14 +52,17 @@ class PomodoroProvider extends ChangeNotifier {
     isRunning = false;
   }
 
-  void startNewWorkSession(CycleType cycleType) {
+  void startNewSession(CycleType cycleType) {
     setCycleFocusAndPause(cycleType);
 
     if(isRunning) {
       timerProvider.stopTimer();
     }
-    
-    currentCycle=0;
+
+    currentSession = databaseService.createSession();
+    currentCycle = databaseService.createCycle(currentSession!);
+
+    currentCycleNumber=0;
     timerProvider.setTimerDuration(cycleFocusTime);
     timerProvider.startTimer();
     isFocus = true;
@@ -72,7 +82,11 @@ class PomodoroProvider extends ChangeNotifier {
   void _onTimerUpdated() {
     notifyListeners();
 
-    if(timerProvider.timeLeft != 0) return;
+    if(timerProvider.timeLeft != 0) {
+      currentCycle?.focusTime = (cycleFocusTime - timerProvider.timeLeft).round();
+      databaseService.updateCycle(currentCycle!);
+      return;
+    }
 
     if(isFocus) {
       timerProvider.setTimerDuration(cyclePauseTime);
@@ -82,7 +96,7 @@ class PomodoroProvider extends ChangeNotifier {
       timerProvider.setTimerDuration(cycleFocusTime);
       triggeredPomodoroNotification();
       isFocus = true;
-      currentCycle = (currentCycle + 1)%cyclesNumber;
+      currentCycleNumber = (currentCycleNumber + 1)%cyclesNumber;
     }
   }
 
@@ -99,7 +113,33 @@ class PomodoroProvider extends ChangeNotifier {
     );
   }
 
-  void getHistory() {
+  Future<List<HistoryItem>> getHistory() async {
+    List<Session> sessions = await databaseService.getAllSessions();
 
+    // List<HistoryItem> historyItems = sessions.map((session) async => {
+      
+    //   var cycles = await databaseService.getCyclesForSession(session.id)
+      
+    //   return HistoryItem(session: session, cycleCount: cycles.length)
+      
+    // }).toList();
+
+    List<HistoryItem> historyItems = List.empty(growable: true);
+
+    for (var session in sessions) {
+      var cycles = await databaseService.getCyclesForSession(session.id);
+      var cycleCount = session.totalFocusTime = cycles.fold(0, (previousValue, cycle) => previousValue + cycle.focusTime);
+      historyItems.add(HistoryItem(session: session, cycleCount: cycleCount));
+    }
+
+    print(historyItems);
+
+    return historyItems;
+
+    // Session session = await databaseService.getSessionWithCycles(currentSession!.id);
+    // currentSession = session;
+    // currentSession?.totalFocusTime = session.cycles!.fold(0, (previousValue, cycle) => previousValue + cycle.focusTime);
+
+    // return currentSession;
   }
 }
