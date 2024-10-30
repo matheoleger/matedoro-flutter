@@ -4,7 +4,7 @@ const minuteInMs = 60000;
 const secondInMs = 1000;
 
 String getFormattedTimer(double remainingTime) {
-  print(remainingTime);
+  // print(remainingTime);
   var remainingMs = remainingTime * 1000;
   
   var hours = (remainingMs / hoursInMs).floor(); // Give remaining hours
@@ -17,6 +17,22 @@ String getFormattedTimer(double remainingTime) {
   var formattedSeconds = getFormattedTime(seconds);
 
   return "$formattedMinutes:$formattedSeconds";
+}
+
+String getFormattedTimeForHistory(double time) {
+  var remainingMs = time * 1000;
+  
+  var hours = (remainingMs / hoursInMs).floor(); // Give remaining hours
+  remainingMs -= hours * hoursInMs; // Subtract hours
+  var minutes = (remainingMs / minuteInMs).floor(); // Give remaining minutes
+  remainingMs -= minutes * minuteInMs; // Subtract minutes
+  var seconds = (remainingMs / secondInMs).floor(); // Give remaining seconds
+  
+  var formattedHours = getFormattedTime(hours);
+  var formattedMinutes = getFormattedTime(minutes);
+  var formattedSeconds = getFormattedTime(seconds);
+
+  return "$formattedHours:$formattedMinutes:$formattedSeconds";
 }
 
 String getFormattedTime(int time) {

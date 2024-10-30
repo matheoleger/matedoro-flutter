@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-class TimerProvider extends ChangeNotifier {
+class TimerService extends ChangeNotifier {
   Timer? timer;
   double timeLeft = 0;
   // bool isRunning = false;

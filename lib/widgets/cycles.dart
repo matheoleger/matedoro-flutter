@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:matedoro_flutter/providers/pomodoro.provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,12 +15,11 @@ class Cycles extends StatelessWidget {
       if (i != 0) {
         cycles.add(SizedBox(width: 10));
       }
-      // cycles.add(Icon(LucideIcons.diamond, size: 16, fill: 1));
-      var currentCycle = pomodoroProvider.currentCycle;
+      var currentCycleNumber = pomodoroProvider.currentCycleNumber;
 
-      if(currentCycle < i) {
+      if(currentCycleNumber < i) {
         cycles.add(SvgPicture.asset('assets/icons/diamond.svg', width: 16, height: 16, colorFilter: ColorFilter.mode(const Color.fromARGB(255, 0, 0, 0), BlendMode.srcIn),));
-      } else if (currentCycle == i) {
+      } else if (currentCycleNumber == i) {
         cycles.add(SvgPicture.asset('assets/icons/square_filled.svg', width: 16, height: 16, colorFilter: ColorFilter.mode(const Color.fromARGB(255, 0, 0, 0), BlendMode.srcIn),));
       } else {
         cycles.add(SvgPicture.asset('assets/icons/diamond_filled.svg', width: 16, height: 16, colorFilter: ColorFilter.mode(const Color.fromARGB(255, 0, 0, 0), BlendMode.srcIn),));
