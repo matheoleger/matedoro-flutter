@@ -78,25 +78,25 @@ class PomodoroProvider extends ChangeNotifier {
   void _onTimerUpdated() {
     notifyListeners();
 
-    if(timerService.timeLeft != 0 && isFocus) storeCycleData();
+    if(isFocus) storeCycleData();
 
     if(timerService.timeLeft != 0) return;
 
     if(isFocus) {
+      isFocus = false;
       timerService.setTimerDuration(cyclePauseTime);
       triggeredPomodoroNotification();
-      isFocus = false;
     } else {
-      timerService.setTimerDuration(cycleFocusTime);
-      triggeredPomodoroNotification();
       isFocus = true;
       currentCycleNumber = (currentCycleNumber + 1)%cyclesNumber;
       currentCycle = databaseService.createCycle(currentSession!);
+      timerService.setTimerDuration(cycleFocusTime);
+      triggeredPomodoroNotification();
     }
   }
 
   void storeCycleData() {
-    currentCycle?.focusTime++;
+    currentCycle?.focusTime = cycleFocusTime.round() - timerService.timeLeft.round();
     databaseService.updateCycle(currentCycle!);
   }
 
