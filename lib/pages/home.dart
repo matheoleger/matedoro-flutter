@@ -15,14 +15,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   void initState() {
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) => {
-      if(!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications()
-      }
-    });
+          if (!isAllowed)
+            {AwesomeNotifications().requestPermissionToSendNotifications()}
+        });
     super.initState();
   }
 
@@ -34,10 +32,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  // onNewButton(PomodoroProvider pomodoroProvider) {
-  //   pomodoroProvider.startNewPomodoroSession();
-  //   // pomodoroProvider.startTimer();
-  // }
+  onStopSessionButton(PomodoroProvider pomodoroProvider) {
+    pomodoroProvider.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
             print(pomodoroProvider.getHistory());
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return const HistoryPage();
-          }));
+            }));
           },
         ),
       ),
@@ -64,36 +61,60 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Pomodoro(),
           SizedBox(height: 20),
-          OutlinedButton(
-              style: ButtonStyle(
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          side: BorderSide(
-                              color: const Color.fromARGB(255, 255, 0, 0)
-                                  .withOpacity(1),
-                              width: 10))),
-                  // side: WidgetStateProperty.all<BorderSide>(BorderSide(color: Colors.white.withOpacity(0))),
-                  padding:
-                      WidgetStateProperty.all<EdgeInsets>(EdgeInsets.all(20)),
-                  backgroundColor: WidgetStateProperty.all<Color>(
-                      const Color.fromARGB(255, 255, 255, 255)
-                          .withOpacity(0.5))),
-              onPressed: () => onPlayButton(pomodoroProvider),
-              child: Icon(pomodoroProvider.isRunning ? LucideIcons.pause : LucideIcons.play, color: Colors.black,))
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(
+                width: 45,
+              ),
+              OutlinedButton(
+                  style: ButtonStyle(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                              side: BorderSide(
+                                  color: const Color.fromARGB(255, 255, 0, 0)
+                                      .withOpacity(1),
+                                  width: 10))),
+                      // side: WidgetStateProperty.all<BorderSide>(BorderSide(color: Colors.white.withOpacity(0))),
+                      padding: WidgetStateProperty.all<EdgeInsets>(
+                          EdgeInsets.all(20)),
+                      backgroundColor: WidgetStateProperty.all<Color>(
+                          const Color.fromARGB(255, 255, 255, 255)
+                              .withOpacity(0.5))),
+                  onPressed: pomodoroProvider.isStopped ? null : () => onPlayButton(pomodoroProvider),
+                  child: Icon(
+                    pomodoroProvider.isRunning
+                        ? LucideIcons.pause
+                        : LucideIcons.play,
+                    color: pomodoroProvider.isStopped ? Colors.grey : Colors.black,
+                  )),
+                  TextButtonTheme(data: TextButtonThemeData(
+                    style: ButtonStyle(
+                      minimumSize: WidgetStateProperty.all<Size>(Size(20, 20)),)), 
+                      child: TextButton(
+                        onPressed: () => onStopSessionButton(pomodoroProvider),
+                        child: Icon(
+                          LucideIcons.timerOff,
+                          size: 20,
+                          color: Colors.black,
+                        )))
+            ],
+          ),
         ],
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showModalBottomSheet<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return ChooseSessionTimeModal();
-              }),
+            context: context,
+            builder: (BuildContext context) {
+              return ChooseSessionTimeModal();
+            }),
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         tooltip: 'Increment',
         child: const Icon(LucideIcons.plus),
       ), // This trailing comma makes auto-formatting nicer for build methods.
-      
     );
   }
 }
