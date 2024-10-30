@@ -82,11 +82,10 @@ class PomodoroProvider extends ChangeNotifier {
   void _onTimerUpdated() {
     notifyListeners();
 
-    if(timerProvider.timeLeft != 0) {
-      currentCycle?.focusTime = (cycleFocusTime - timerProvider.timeLeft).round();
-      databaseService.updateCycle(currentCycle!);
-      return;
-    }
+    // if(timerProvider.timeLeft != 0 && isFocus) storeCycleData();
+    if(timerProvider.timeLeft != 0 && isFocus) storeCycleData();
+
+    if(timerProvider.timeLeft != 0) return;
 
     if(isFocus) {
       timerProvider.setTimerDuration(cyclePauseTime);
@@ -97,7 +96,16 @@ class PomodoroProvider extends ChangeNotifier {
       triggeredPomodoroNotification();
       isFocus = true;
       currentCycleNumber = (currentCycleNumber + 1)%cyclesNumber;
+      currentCycle = databaseService.createCycle(currentSession!);
     }
+  }
+
+  void storeCycleData() {
+    // currentCycle?.focusTime = (cycleFocusTime - timerProvider.timeLeft).round();
+    currentCycle?.focusTime++;
+    // print("test");
+    // print((cycleFocusTime - timerProvider.timeLeft).round());
+    databaseService.updateCycle(currentCycle!);
   }
 
   void triggeredPomodoroNotification() {
@@ -128,11 +136,13 @@ class PomodoroProvider extends ChangeNotifier {
 
     for (var session in sessions) {
       var cycles = await databaseService.getCyclesForSession(session.id);
-      var cycleCount = session.totalFocusTime = cycles.fold(0, (previousValue, cycle) => previousValue + cycle.focusTime);
+      var cycleCount = cycles.length; 
+      session.totalFocusTime = cycles.fold(0, (previousValue, cycle) => previousValue + cycle.focusTime);
+      // print(session.totalFocusTime);
       historyItems.add(HistoryItem(session: session, cycleCount: cycleCount));
     }
 
-    print(historyItems);
+    // print(historyItems);
 
     return historyItems;
 

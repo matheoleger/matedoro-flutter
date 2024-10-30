@@ -64,7 +64,6 @@ class DatabaseService {
       join(await getDatabasesPath(), 'matedoro.db'),
       // When the database is first created, create a table to store dogs.
       onCreate: (db, version) {
-        print("nique te amer ?");
         // Run the CREATE TABLE statement on the database.
         db.execute('''
           CREATE TABLE Session (
