@@ -1,5 +1,3 @@
-import 'package:matedoro_flutter/models/session.dart';
-
 class Cycle {
   String id;
   String sessionId;

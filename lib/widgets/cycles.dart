@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:matedoro_flutter/providers/pomodoro.provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +15,6 @@ class Cycles extends StatelessWidget {
       if (i != 0) {
         cycles.add(SizedBox(width: 10));
       }
-      // cycles.add(Icon(LucideIcons.diamond, size: 16, fill: 1));
       var currentCycleNumber = pomodoroProvider.currentCycleNumber;
 
       if(currentCycleNumber < i) {
