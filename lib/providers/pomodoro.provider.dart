@@ -26,6 +26,7 @@ class PomodoroProvider extends ChangeNotifier {
 
   var isFocus = true;
   var isRunning = false;
+  var isStopped = true;
 
   PomodoroProvider({required this.timerService, required this.databaseService}) {
     timerService.addListener(_onTimerUpdated);
@@ -48,12 +49,19 @@ class PomodoroProvider extends ChangeNotifier {
     isRunning = false;
   }
 
+  void stop() {
+    isStopped = true;
+    reinitializeSession();
+  }
+
   void startNewSession(CycleType cycleType) {
     setCycleFocusAndPause(cycleType);
 
     if(isRunning) {
       timerService.stopTimer();
     }
+
+    isStopped = false;
 
     currentSession = databaseService.createSession();
     currentCycle = databaseService.createCycle(currentSession!);
@@ -63,6 +71,13 @@ class PomodoroProvider extends ChangeNotifier {
     timerService.startTimer();
     isFocus = true;
     isRunning = true;
+  }
+
+  void reinitializeSession() {
+    currentCycleNumber=0;
+    isRunning = false;
+    timerService.stopTimer();
+    timerService.setTimerDuration(0);
   }
 
   void setCycleFocusAndPause(CycleType cycleType) {
@@ -77,6 +92,8 @@ class PomodoroProvider extends ChangeNotifier {
 
   void _onTimerUpdated() {
     notifyListeners();
+
+    if(isStopped) return;
 
     if(isFocus) storeCycleData();
 
@@ -126,4 +143,5 @@ class PomodoroProvider extends ChangeNotifier {
 
     return historyItems;
   }
+
 }

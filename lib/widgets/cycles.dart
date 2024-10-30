@@ -17,7 +17,7 @@ class Cycles extends StatelessWidget {
       }
       var currentCycleNumber = pomodoroProvider.currentCycleNumber;
 
-      if(currentCycleNumber < i) {
+      if(currentCycleNumber < i || pomodoroProvider.isStopped) {
         cycles.add(SvgPicture.asset('assets/icons/diamond.svg', width: 16, height: 16, colorFilter: ColorFilter.mode(const Color.fromARGB(255, 0, 0, 0), BlendMode.srcIn),));
       } else if (currentCycleNumber == i) {
         cycles.add(SvgPicture.asset('assets/icons/square_filled.svg', width: 16, height: 16, colorFilter: ColorFilter.mode(const Color.fromARGB(255, 0, 0, 0), BlendMode.srcIn),));
