@@ -9,6 +9,7 @@ import 'package:matedoro_flutter/services/database_service.dart';
 enum CycleType {
   LONG,
   SHORT,
+  DEBUG
 }
 
 class PomodoroProvider extends ChangeNotifier {
@@ -82,11 +83,14 @@ class PomodoroProvider extends ChangeNotifier {
 
   void setCycleFocusAndPause(CycleType cycleType) {
     if(cycleType == CycleType.LONG) {
+      cycleFocusTime = 45*60; // 40min in seconds
+      cyclePauseTime = 15*60; // 15min in seconds
+    } else if (cycleType == CycleType.SHORT) {
       cycleFocusTime = 25*60; // 25min in seconds
       cyclePauseTime = 5*60; // 5min in seconds
     } else {
-      cycleFocusTime = 5; 
-      cyclePauseTime = 3;
+      cycleFocusTime = 10; 
+      cyclePauseTime = 5;
     }
   }
 
@@ -123,8 +127,8 @@ class PomodoroProvider extends ChangeNotifier {
         id: 0,
         channelKey: "pomodoro_channel",
         actionType: ActionType.Default,
-        title: isFocus ? "Time to take a break" : "Time to go back to work",
-        body: isFocus ? "You have completed a cycle. Take a break." : "Break is over. Go back to work now or consequences.",
+        title: !isFocus ? "Time to take a break" : "Time to go back to work",
+        body: !isFocus ? "You have completed a cycle. Take a break." : "Break is over. Go back to work now or consequences.",
         category: NotificationCategory.Reminder,
       )
     );

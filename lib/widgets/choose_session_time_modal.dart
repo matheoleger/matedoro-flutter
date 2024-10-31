@@ -38,7 +38,7 @@ class ChooseSessionTimeModal extends StatelessWidget {
                           .withOpacity(0.5))),
               onPressed: () =>
                   onChooseCycle(CycleType.LONG),
-              child: Text("25min / 5min")),
+              child: Text("45min / 15min")),
           SizedBox(height: 20),
           OutlinedButton(
               style: ButtonStyle(
@@ -56,7 +56,25 @@ class ChooseSessionTimeModal extends StatelessWidget {
                           .withOpacity(0.5))),
               onPressed: () =>
                   onChooseCycle(CycleType.SHORT),
-              child: Text("15min / 5min")),
+              child: Text("25min / 5min")),
+          SizedBox(height: 20),
+          OutlinedButton(
+              style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          side: BorderSide(
+                              color: const Color.fromARGB(255, 255, 0, 0)
+                                  .withOpacity(1),
+                              width: 10))),
+                  padding:
+                      WidgetStateProperty.all<EdgeInsets>(EdgeInsets.all(20)),
+                  backgroundColor: WidgetStateProperty.all<Color>(
+                      const Color.fromARGB(255, 255, 255, 255)
+                          .withOpacity(0.5))),
+              onPressed: () =>
+                  onChooseCycle(CycleType.DEBUG),
+              child: Text("10sec / 5sec")),
         ],
       ),
     ));
